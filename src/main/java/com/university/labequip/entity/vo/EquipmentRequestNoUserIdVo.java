@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@ApiModel(value="设备多条件请求类（无使用者id，无是否报废）", description="封装设备信息")
+@ApiModel(value="设备多条件请求类（无使用者id，无是否报废，无是否分配）", description="封装设备信息")
 public class EquipmentRequestNoUserIdVo {
 
     @ApiModelProperty(value = "设备名称")
@@ -40,8 +40,4 @@ public class EquipmentRequestNoUserIdVo {
 
     @ApiModelProperty(value = "是否报账")
     private Boolean isRecorded;
-
-    @ApiModelProperty(value = "是否分配")
-    private Boolean isAssigned;
-
 }

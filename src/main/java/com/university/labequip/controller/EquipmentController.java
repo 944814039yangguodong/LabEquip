@@ -48,6 +48,7 @@ public class EquipmentController {
         User user = userService.getById(StpUtil.getLoginIdAsString());
         equipmentRequestVo.setUserId(user.getUserId());
         equipmentRequestVo.setIsRetired(false);//未报废
+        equipmentRequestVo.setIsAssigned(true);//已分配
         //查询用户所属设备列表
         Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
         long total = equipmentPage.getTotal();//总记录数
@@ -64,6 +65,7 @@ public class EquipmentController {
         String Dreamtech="1111";
         equipmentRequestVo.setUserId(Dreamtech);
         equipmentRequestVo.setIsRetired(false);//未报废
+        equipmentRequestVo.setIsAssigned(true);//已分配
         //查询公共用户所属设备列表
         Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
         long total = equipmentPage.getTotal();//总记录数
@@ -78,7 +80,22 @@ public class EquipmentController {
         BeanUtils.copyProperties(equipmentRequestNoUserIdVo,equipmentRequestVo);
         equipmentRequestVo.setUserId(userId);//目标用户id
         equipmentRequestVo.setIsRetired(false);//未报废
+        equipmentRequestVo.setIsAssigned(true);//已分配
         //查询该用户公开的设备列表
+        Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
+        long total = equipmentPage.getTotal();//总记录数
+        List< Equipment > records = equipmentPage.getRecords();//数据list集合
+        return R.ok().data("total",total).data("rows",records);
+    }
+
+    @ApiOperation("用户购买顺序多条件查看未分配的设备")
+    @GetMapping("getUnassignedEquipment/{current}/{limit}")
+    public R getUnassignedEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestNoUserIdVo equipmentRequestNoUserIdVo){
+        EquipmentRequestVo equipmentRequestVo=new EquipmentRequestVo();
+        BeanUtils.copyProperties(equipmentRequestNoUserIdVo,equipmentRequestVo);
+        equipmentRequestVo.setIsRetired(false);//未报废
+        equipmentRequestVo.setIsAssigned(false);//未分配
+        //查询未分配的设备列表
         Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
         long total = equipmentPage.getTotal();//总记录数
         List< Equipment > records = equipmentPage.getRecords();//数据list集合
@@ -114,6 +131,9 @@ public class EquipmentController {
     @PostMapping("alterEquipment/{equipmentId}")
     @SaCheckRole("ADMIN")
     public R alterEquipment(@RequestBody EquipmentRequestVo equipmentRequestVo, @PathVariable Integer equipmentId) {
+        if(!ObjectUtils.isEmpty(equipmentRequestVo.getUserId())){
+            equipmentRequestVo.setIsAssigned(true);//修改使用人则设备设置为已分配
+        }
         Equipment equipment = equipmentService.getById(equipmentId);
         BeanUtils.copyProperties(equipmentRequestVo,equipment);
         //更新设备信息
@@ -157,6 +177,18 @@ public class EquipmentController {
         //分配设备
         equipmentService.updateById(equipment);
         return R.ok().message("强制分配成功");
+    }
+
+    @ApiOperation("管理员取消分配设备")
+    @PostMapping("unassignEquipmentByForce/{equipmentId}")
+    @SaCheckRole("ADMIN")
+    public R unassignEquipmentByForce(@PathVariable Integer equipmentId) {
+        Equipment equipment = equipmentService.getById(equipmentId);
+        equipment.setUserId(null);
+        equipment.setIsAssigned(false);
+        //取消分配设备
+        equipmentService.updateById(equipment);
+        return R.ok();
     }
 
     @ApiOperation("管理员删除设备")

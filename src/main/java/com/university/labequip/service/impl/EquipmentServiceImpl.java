@@ -61,7 +61,7 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
         return equipmentMapper.selectList(equipmentQueryWrapper);
     }
 
-    //分页且按购买时间排序版
+    //分页且按购买时间排序的设备查询
     @Override
     public Page<Equipment> perPageOrderBYPurchaseDate(long current, long limit, EquipmentRequestVo equipmentRequestVo) {
         QueryWrapper<Equipment> equipmentQueryWrapper =

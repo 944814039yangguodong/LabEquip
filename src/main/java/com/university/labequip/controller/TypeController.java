@@ -31,7 +31,7 @@ public class TypeController {
     private TypeService typeService;
 
     @ApiOperation("查询所有类型")
-    @PostMapping("selectAllType")
+    @GetMapping("selectAllType")
     public R selectAllType() {
         List<String> list=typeService.getAllType();
         return R.ok().data("list",list);

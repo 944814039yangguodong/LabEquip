@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,14 +74,14 @@ public class UserController {
     }
 
     @ApiOperation("查询所有普通用户")
-    @PostMapping("selectUser")
+    @GetMapping("selectUser")
     public R selectUser() {
         List<UserInfoResponseVo> list=userService.getUser();
         return R.ok().data("list",list);
     }
 
     @ApiOperation("管理员查询所有用户")
-    @PostMapping("selectAllUser")
+    @GetMapping("selectAllUser")
     @SaCheckRole("ADMIN")
     public R selectAllUser() {
         List<UserResponseVo> list=userService.getAllUser();
@@ -91,6 +92,9 @@ public class UserController {
     @PostMapping("addUser")
     @SaCheckRole("ADMIN")
     public R addUser(@RequestBody UserRequestVo userRequestVo) {
+        if(!ObjectUtils.isEmpty(userService.getById(userRequestVo.getUserId()))){
+            return R.error().message("该学工号已存在");
+        }
         User user = new User();
         BeanUtils.copyProperties(userRequestVo,user);
         String MD5Password = SaSecureUtil.md5(userRequestVo.getUserPassword());
@@ -113,6 +117,13 @@ public class UserController {
     @SaCheckRole("ADMIN")
     public R alterUser(@PathVariable String userId, @RequestBody UserRequestNoUserIdVo userRequestNoUserIdVo) {
         User user = userService.getById(userId);
+        if(ObjectUtils.isEmpty(user)){
+            return R.error().message("该用户不存在");
+        }
+        if(!ObjectUtils.isEmpty(userRequestNoUserIdVo.getUserPassword())){
+            String MD5Password = SaSecureUtil.md5(userRequestNoUserIdVo.getUserPassword());
+            userRequestNoUserIdVo.setUserPassword(MD5Password);
+        }
         BeanUtils.copyProperties(userRequestNoUserIdVo,user);
         //更新用户信息
         userService.updateById(user);

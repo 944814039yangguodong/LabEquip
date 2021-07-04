@@ -31,7 +31,7 @@ public class TeacherController {
     private TeacherService teacherService;
 
     @ApiOperation("查询所有导师")
-    @PostMapping("selectAllTeacher")
+    @GetMapping("selectAllTeacher")
     public R selectAllTeacher() {
         List<String> list=teacherService.getAllTeacher();
         return R.ok().data("list",list);

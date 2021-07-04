@@ -31,7 +31,7 @@ public class PlaceController {
     private PlaceService placeService;
 
     @ApiOperation("查询所有位置")
-    @PostMapping("selectAllPlace")
+    @GetMapping("selectAllPlace")
     public R selectAllPlace() {
         List<String> list=placeService.getAllPlace();
         return R.ok().data("list",list);
