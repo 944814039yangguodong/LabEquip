@@ -3,6 +3,8 @@ package com.university.labequip.service;
 import com.university.labequip.entity.Type;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface TypeService extends IService<Type> {
 
+    List<String> getAllType();
 }

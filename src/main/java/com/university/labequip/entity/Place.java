@@ -29,8 +29,8 @@ public class Place implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "实验室位置编号")
-    @TableId(value = "place_id", type = IdType.ASSIGN_ID)
-    private String placeId;
+    @TableId(value = "place_id", type = IdType.INPUT)
+    private Integer placeId;
 
     @ApiModelProperty(value = "实验室位置")
     private String placeName;

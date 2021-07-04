@@ -2,6 +2,9 @@ package com.university.labequip.service;
 
 import com.university.labequip.entity.Equipment;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.university.labequip.entity.vo.EquipmentRequestVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface EquipmentService extends IService<Equipment> {
 
+    List<Equipment> selectEquipment(EquipmentRequestVo equipmentRequestVo);
 }

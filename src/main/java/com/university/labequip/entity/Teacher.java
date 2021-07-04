@@ -29,8 +29,8 @@ public class Teacher implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "导师编号")
-    @TableId(value = "teacher_id", type = IdType.ASSIGN_ID)
-    private String teacherId;
+    @TableId(value = "teacher_id", type = IdType.INPUT)
+    private Integer teacherId;
 
     @ApiModelProperty(value = "导师姓名")
     private String teacherName;

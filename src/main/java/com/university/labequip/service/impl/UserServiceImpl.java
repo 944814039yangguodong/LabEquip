@@ -1,10 +1,18 @@
 package com.university.labequip.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.university.labequip.entity.User;
+import com.university.labequip.entity.vo.UserInfoResponseVo;
+import com.university.labequip.entity.vo.UserResponseVo;
 import com.university.labequip.mapper.UserMapper;
 import com.university.labequip.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +25,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public List<UserResponseVo> getAllUser() {
+        //新建列表用于返回
+        List<UserResponseVo> list = new ArrayList<>();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+
+        //遍历项目
+        for (User user : userService.list(wrapper)) {
+            UserResponseVo userResponseVo = new UserResponseVo();
+            BeanUtils.copyProperties(user,userResponseVo);
+            list.add(userResponseVo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<UserInfoResponseVo> getUser() {
+        //新建列表用于返回
+        List<UserInfoResponseVo> list = new ArrayList<>();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        //排除管理员
+        wrapper.ne("user_type",0);
+        //遍历项目
+        for (User user : userService.list(wrapper)) {
+            UserInfoResponseVo userInfoResponseVo = new UserInfoResponseVo();
+            BeanUtils.copyProperties(user, userInfoResponseVo);
+            list.add(userInfoResponseVo);
+        }
+        return list;
+    }
 }

@@ -57,7 +57,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo()).enable(true)
                 .select()
                 //apis： 添加swagger接口提取范围
-                .apis(RequestHandlerSelectors.basePackage("com.university.laboratory.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.university.labequip.controller"))
                 //.apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.any())
                 .build();
@@ -65,7 +65,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
-                .title("实验室项目接口文档")
+                .title("实验室设备经费管理项目接口文档")
                 .description("实验室的设备经费管理后端接口")
                 .contact(new Contact("作者", "作者URL", "作者Email"))
                 .version("1.0")

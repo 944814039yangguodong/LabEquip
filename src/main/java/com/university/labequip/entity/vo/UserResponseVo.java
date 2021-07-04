@@ -5,11 +5,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value="用户信息返回类（不含密码、用户类型）", description="当前登录的用户信息")
-public class UserInfoResponseVo {
+@ApiModel(value="用户信息返回类", description="当前登录的用户信息")
+public class UserResponseVo {
 
     @ApiModelProperty(value = "账号/学工号")
     private String userId;
+
+    @ApiModelProperty(value = "用户密码")
+    private String userPassword;
 
     @ApiModelProperty(value = "用户姓名")
     private String userName;
@@ -20,4 +23,6 @@ public class UserInfoResponseVo {
     @ApiModelProperty(value = "导师（老师填自己）")
     private String instructor;
 
+    @ApiModelProperty(value = "用户类别")
+    private Integer userType;
 }

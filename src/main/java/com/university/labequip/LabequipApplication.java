@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan
+@MapperScan("com.university.labequip.mapper")
 public class LabequipApplication {
 
 	public static void main(String[] args) {

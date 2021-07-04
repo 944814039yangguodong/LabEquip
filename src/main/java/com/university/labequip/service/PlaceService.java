@@ -3,6 +3,8 @@ package com.university.labequip.service;
 import com.university.labequip.entity.Place;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface PlaceService extends IService<Place> {
 
+    List<String> getAllPlace();
 }

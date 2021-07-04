@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,7 +30,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "账号/学工号")
-    @TableId(value = "user_id", type = IdType.ASSIGN_ID)
+    @TableId(value = "user_id", type = IdType.INPUT)
     private String userId;
 
     @ApiModelProperty(value = "用户密码")
@@ -48,22 +50,22 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
-    private String gmtCreate;
+    private Date gmtCreate;
 
     @ApiModelProperty(value = "创建者id")
     @TableField(fill = FieldFill.INSERT)
-    private Integer creatorId;
+    private String creatorId;
 
     @ApiModelProperty(value = "修改时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String gmtModify;
+    private Date gmtModify;
 
     @ApiModelProperty(value = "修改者id")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Integer modifierId;
+    private String modifierId;
 
     @ApiModelProperty(value = "删除时间")
-    private String gmtDelete;
+    private Date gmtDelete;
 
 
 }

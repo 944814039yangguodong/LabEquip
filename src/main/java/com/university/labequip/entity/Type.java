@@ -29,8 +29,8 @@ public class Type implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "设备类型编号")
-    @TableId(value = "type_id", type = IdType.ASSIGN_ID)
-    private String typeId;
+    @TableId(value = "type_id", type = IdType.INPUT)
+    private Integer typeId;
 
     @ApiModelProperty(value = "设备类型名")
     private String typeName;
