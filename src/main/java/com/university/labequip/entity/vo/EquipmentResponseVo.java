@@ -12,7 +12,7 @@ import java.util.Date;
 public class EquipmentResponseVo {
 
     @ApiModelProperty(value = "主键id(设备)")
-    private String equipmentId;
+    private Integer equipmentId;
 
     @ApiModelProperty(value = "设备名称")
     private String equipmentName;

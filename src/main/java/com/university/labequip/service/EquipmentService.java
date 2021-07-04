@@ -1,5 +1,6 @@
 package com.university.labequip.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.university.labequip.entity.Equipment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.university.labequip.entity.vo.EquipmentRequestVo;
@@ -17,4 +18,6 @@ import java.util.List;
 public interface EquipmentService extends IService<Equipment> {
 
     List<Equipment> selectEquipment(EquipmentRequestVo equipmentRequestVo);
+
+    Page<Equipment> perPageOrderBYPurchaseDate(long current, long limit, EquipmentRequestVo equipmentRequestVo);
 }

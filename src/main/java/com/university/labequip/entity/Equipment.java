@@ -30,8 +30,8 @@ public class Equipment implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键id（设备）")
-    @TableId(value = "equipment_id", type = IdType.ASSIGN_ID)
-    private String equipmentId;
+    @TableId(value = "equipment_id", type = IdType.AUTO)
+    private Integer equipmentId;
 
     @ApiModelProperty(value = "设备名称")
     private String equipmentType;
