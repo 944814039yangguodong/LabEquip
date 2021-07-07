@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import com.university.labequip.utils.R;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -50,7 +51,7 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(true);//已分配
         //查询用户所属设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
         long total = equipmentPage.getTotal();//总记录数
         List< Equipment > records = equipmentPage.getRecords();//数据list集合
         return R.ok().data("total",total).data("rows",records);
@@ -67,7 +68,7 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(true);//已分配
         //查询公共用户所属设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
         long total = equipmentPage.getTotal();//总记录数
         List< Equipment > records = equipmentPage.getRecords();//数据list集合
         return R.ok().data("total",total).data("rows",records);
@@ -82,7 +83,7 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(true);//已分配
         //查询该用户公开的设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
         long total = equipmentPage.getTotal();//总记录数
         List< Equipment > records = equipmentPage.getRecords();//数据list集合
         return R.ok().data("total",total).data("rows",records);
@@ -96,7 +97,7 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(false);//未分配
         //查询未分配的设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
         long total = equipmentPage.getTotal();//总记录数
         List< Equipment > records = equipmentPage.getRecords();//数据list集合
         return R.ok().data("total",total).data("rows",records);
@@ -106,10 +107,29 @@ public class EquipmentController {
     @GetMapping("getAllEquipment/{current}/{limit}")
     @SaCheckRole("ADMIN")
     public R getAllEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestVo equipmentRequestVo){
-        Page< Equipment > equipmentPage = equipmentService.perPageOrderBYPurchaseDate(current,limit,equipmentRequestVo);
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
         long total = equipmentPage.getTotal();//总记录数
         List< Equipment > records = equipmentPage.getRecords();//数据list集合
         return R.ok().data("total",total).data("rows",records);
+    }
+
+    @ApiOperation("设备分类统计")
+    @GetMapping("getStatisticEquipment/{property}")
+    @SaCheckRole("ADMIN")
+    public R getStatisticEquipment(@PathVariable String property){
+        if(property.equals("equipment_type")||property.equals("brand")||property.equals("is_recorded")||property.equals("is_assigned")||property.equals("place")){
+            List<Map<String, Object>> list= equipmentService.countByGroup(property);
+            long total = list.size();//总记录数
+            return R.ok().data("total",total).data("rows",list);
+        }
+        else if(property.equals("purchase_date")){
+            List<Map<String, Object>> list= equipmentService.countByGroup(property);
+            long total = list.size();//总记录数
+            return R.ok().data("total",total).data("rows",list);
+        }
+        else {
+            return R.error().message("不允许以属性:"+property+"分类统计");
+        }
     }
 
     @ApiOperation("管理员设备入库")

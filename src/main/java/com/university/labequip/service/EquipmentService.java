@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.university.labequip.entity.vo.EquipmentRequestVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,5 +20,7 @@ public interface EquipmentService extends IService<Equipment> {
 
     List<Equipment> selectEquipment(EquipmentRequestVo equipmentRequestVo);
 
-    Page<Equipment> perPageOrderBYPurchaseDate(long current, long limit, EquipmentRequestVo equipmentRequestVo);
+    Page<Equipment> perPageByOrder(long current, long limit, EquipmentRequestVo equipmentRequestVo, String property);
+
+    List<Map<String, Object>> countByGroup(String property);
 }

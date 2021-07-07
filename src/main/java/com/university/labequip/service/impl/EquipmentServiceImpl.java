@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -30,8 +30,7 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
     //不分页版
     @Override
     public List<Equipment> selectEquipment(EquipmentRequestVo equipmentRequestVo) {
-        QueryWrapper<Equipment> equipmentQueryWrapper =
-                new QueryWrapper<>();
+        QueryWrapper<Equipment> equipmentQueryWrapper = new QueryWrapper<>();
         if (!ObjectUtils.isEmpty(equipmentRequestVo.getEquipmentType()))
             equipmentQueryWrapper.eq("equipment_type",equipmentRequestVo.getEquipmentType());
         if (!ObjectUtils.isEmpty(equipmentRequestVo.getBrand()))
@@ -61,11 +60,10 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
         return equipmentMapper.selectList(equipmentQueryWrapper);
     }
 
-    //分页且按购买时间排序的设备查询
+    //分页且按property排序的设备查询
     @Override
-    public Page<Equipment> perPageOrderBYPurchaseDate(long current, long limit, EquipmentRequestVo equipmentRequestVo) {
-        QueryWrapper<Equipment> equipmentQueryWrapper =
-                new QueryWrapper<>();
+    public Page<Equipment> perPageByOrder(long current, long limit, EquipmentRequestVo equipmentRequestVo, String property) {
+        QueryWrapper<Equipment> equipmentQueryWrapper = new QueryWrapper<>();
         if (!ObjectUtils.isEmpty(equipmentRequestVo.getEquipmentType()))
             equipmentQueryWrapper.eq("equipment_type",equipmentRequestVo.getEquipmentType());
         if (!ObjectUtils.isEmpty(equipmentRequestVo.getBrand()))
@@ -92,9 +90,17 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
             equipmentQueryWrapper.eq("is_recorded",equipmentRequestVo.getIsRecorded());
         if (!ObjectUtils.isEmpty(equipmentRequestVo.getIsAssigned()))
             equipmentQueryWrapper.eq("is_assigned",equipmentRequestVo.getIsAssigned());
-        equipmentQueryWrapper.orderByDesc("purchase_date");
+        equipmentQueryWrapper.orderByDesc(property);
         Page< Equipment > equipmentPage = new Page<>(current,limit);
         equipmentMapper.selectPage(equipmentPage,equipmentQueryWrapper);
         return equipmentPage;
+    }
+
+    @Override
+    public List<Map<String, Object>> countByGroup(String property) {
+        QueryWrapper<Equipment> equipmentQueryWrapper = new QueryWrapper<>();
+        equipmentQueryWrapper.select(property+" property", "count(*) count")
+                             .groupBy(property);
+        return equipmentMapper.selectMaps(equipmentQueryWrapper);
     }
 }
