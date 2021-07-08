@@ -51,6 +51,9 @@ public class Equipment implements Serializable {
     @ApiModelProperty(value = "购买日期")
     private Date purchaseDate;
 
+    @ApiModelProperty(value = "购买年")
+    private String purchaseYear;
+
     @ApiModelProperty(value = "报废日期")
     private Date retirementDate;
 

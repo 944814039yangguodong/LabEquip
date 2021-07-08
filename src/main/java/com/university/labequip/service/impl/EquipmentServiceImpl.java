@@ -100,7 +100,17 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
     public List<Map<String, Object>> countByGroup(String property) {
         QueryWrapper<Equipment> equipmentQueryWrapper = new QueryWrapper<>();
         equipmentQueryWrapper.select(property+" property", "count(*) count")
+                             .eq("is_retired",false)
                              .groupBy(property);
+        return equipmentMapper.selectMaps(equipmentQueryWrapper);
+    }
+
+    @Override
+    public List<Map<String, Object>> countByGroupRetired(String property) {
+        QueryWrapper<Equipment> equipmentQueryWrapper = new QueryWrapper<>();
+        equipmentQueryWrapper.select(property+" property", "count(*) count")
+                .eq("is_retired",true)
+                .groupBy(property);
         return equipmentMapper.selectMaps(equipmentQueryWrapper);
     }
 }

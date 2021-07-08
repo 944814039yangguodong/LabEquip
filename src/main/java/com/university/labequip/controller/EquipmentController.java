@@ -103,32 +103,32 @@ public class EquipmentController {
         return R.ok().data("total",total).data("rows",records);
     }
 
-    @ApiOperation("管理员购买顺序多条件查看所有设备(含已报废设备)")
-    @GetMapping("getAllEquipment/{current}/{limit}")
+    @ApiOperation("管理员多条件按property顺序分页查看所有设备(含已报废设备)")
+    @GetMapping("getAllEquipment/{current}/{limit}/{property}")
     @SaCheckRole("ADMIN")
-    public R getAllEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestVo equipmentRequestVo){
-        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
-        long total = equipmentPage.getTotal();//总记录数
-        List< Equipment > records = equipmentPage.getRecords();//数据list集合
-        return R.ok().data("total",total).data("rows",records);
+    public R getAllEquipment(@PathVariable long current, @PathVariable long limit, @PathVariable String property, EquipmentRequestVo equipmentRequestVo){
+        if(property.equals("purchase_date")||property.equals("unit_price")||property.equals("retirement_date")){
+            Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,property);
+            long total = equipmentPage.getTotal();//总记录数
+            List< Equipment > records = equipmentPage.getRecords();//数据list集合
+            return R.ok().data("total",total).data("rows",records);
+        }
+        else return R.error().message("不允许以属性:"+property+"排序，仅允许以属性‘purchase_date’,'retirement_date','unit_price'排序");
     }
 
     @ApiOperation("设备分类统计")
     @GetMapping("getStatisticEquipment/{property}")
     @SaCheckRole("ADMIN")
     public R getStatisticEquipment(@PathVariable String property){
-        if(property.equals("equipment_type")||property.equals("brand")||property.equals("is_recorded")||property.equals("is_assigned")||property.equals("place")){
+        if(property.equals("equipment_type")||property.equals("brand")||property.equals("is_recorded")||property.equals("is_assigned")||property.equals("place")||property.equals("purchase_year")){
             List<Map<String, Object>> list= equipmentService.countByGroup(property);
-            long total = list.size();//总记录数
-            return R.ok().data("total",total).data("rows",list);
-        }
-        else if(property.equals("purchase_date")){
-            List<Map<String, Object>> list= equipmentService.countByGroup(property);
-            long total = list.size();//总记录数
-            return R.ok().data("total",total).data("rows",list);
+            List<Map<String, Object>> listRetired= equipmentService.countByGroupRetired(property);
+            long total = list.size();//未报废的总组数
+            long totalRetired = listRetired.size();//已报废的总组数
+            return R.ok().data("total",total).data("rows",list).data("total_retired",totalRetired).data("rows_retired",listRetired);
         }
         else {
-            return R.error().message("不允许以属性:"+property+"分类统计");
+            return R.error().message("不允许以属性:"+property+"分类统计，仅允许以属性‘equipment_type’,'brand','is_recorded','is_assigned','place','purchase_year'分类");
         }
     }
 
@@ -140,6 +140,7 @@ public class EquipmentController {
         BeanUtils.copyProperties(equipmentRequestNoIsAssignedVo,equipment);
         equipment.setIsRetired(false);//入库设置为未报废
         equipment.setIsAssigned(false);//入库设置为未分配
+        equipment.setPurchaseYear(String.valueOf(equipment.getPurchaseDate().getYear()+1900));//获取年
         for(int i=0;i<amount;i++){
             //保存设备一次
             equipmentService.save(equipment);
