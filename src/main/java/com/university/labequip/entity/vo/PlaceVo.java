@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value="新增位置请求信息", description="位置请求信息")
-public class PlaceRequestVo {
+public class PlaceVo {
     @ApiModelProperty(value = "实验室位置编号")
     private Integer placeId;
 

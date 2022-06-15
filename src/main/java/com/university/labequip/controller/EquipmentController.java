@@ -9,6 +9,7 @@ import com.university.labequip.entity.User;
 import com.university.labequip.entity.vo.EquipmentRequestNoIsAssignedVo;
 import com.university.labequip.entity.vo.EquipmentRequestNoUserIdVo;
 import com.university.labequip.entity.vo.EquipmentRequestVo;
+import com.university.labequip.entity.vo.EquipmentResponseVo;
 import com.university.labequip.service.EquipmentService;
 import com.university.labequip.service.UserService;
 import io.swagger.annotations.Api;
@@ -19,6 +20,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import com.university.labequip.utils.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import java.util.Map;
  * @since 2021-07-03
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/api/equipment")
 @Api(tags = "设备相关接口")
 public class EquipmentController {
@@ -40,7 +43,7 @@ public class EquipmentController {
     @Autowired
     private UserService userService;
 
-    @ApiOperation("用户购买顺序多条件查看自己的设备")
+    @ApiOperation("用户多条件查看自己的设备")
     @GetMapping("getUserEquipment/{current}/{limit}")
     public R getUserEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestNoUserIdVo equipmentRequestNoUserIdVo){
         EquipmentRequestVo equipmentRequestVo=new EquipmentRequestVo();
@@ -51,13 +54,22 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(true);//已分配
         //查询用户所属设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"equipment_id");
         long total = equipmentPage.getTotal();//总记录数
-        List< Equipment > records = equipmentPage.getRecords();//数据list集合
+        List< Equipment > temp = equipmentPage.getRecords();//数据list集合
+        List<EquipmentResponseVo> records = new ArrayList<>();
+        for (Equipment equipment:temp) {
+            EquipmentResponseVo equipmentResponseVo = new EquipmentResponseVo();
+            BeanUtils.copyProperties(equipment,equipmentResponseVo);
+            if(!ObjectUtils.isEmpty(equipment.getUserId())){
+                equipmentResponseVo.setUserName(userService.getById(equipment.getUserId()).getUserName());
+            }
+            records.add(equipmentResponseVo);
+        }
         return R.ok().data("total",total).data("rows",records);
     }
 
-    @ApiOperation("用户购买顺序多条件查看公用的设备")
+    @ApiOperation("用户多条件查看公用的设备")
     @GetMapping("getPublicEquipment/{current}/{limit}")
     public R getPublicEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestNoUserIdVo equipmentRequestNoUserIdVo){
         EquipmentRequestVo equipmentRequestVo=new EquipmentRequestVo();
@@ -68,28 +80,46 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(true);//已分配
         //查询公共用户所属设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"equipment_id");
         long total = equipmentPage.getTotal();//总记录数
-        List< Equipment > records = equipmentPage.getRecords();//数据list集合
+        List< Equipment > temp = equipmentPage.getRecords();//数据list集合
+        List<EquipmentResponseVo> records = new ArrayList<>();
+        for (Equipment equipment:temp) {
+            EquipmentResponseVo equipmentResponseVo = new EquipmentResponseVo();
+            BeanUtils.copyProperties(equipment,equipmentResponseVo);
+            if(!ObjectUtils.isEmpty(equipment.getUserId())){
+                equipmentResponseVo.setUserName(userService.getById(equipment.getUserId()).getUserName());
+            }
+            records.add(equipmentResponseVo);
+        }
         return R.ok().data("total",total).data("rows",records);
     }
 
-    @ApiOperation("用户购买顺序多条件查看他人的设备")
-    @GetMapping("getOthersEquipment/{userId}/{current}/{limit}")
-    public R getOthersEquipment(@PathVariable String userId, @PathVariable long current, @PathVariable long limit, EquipmentRequestNoUserIdVo equipmentRequestNoUserIdVo){
+    @ApiOperation("用户多条件查看他人的设备")
+    @GetMapping("getOthersEquipment/{current}/{limit}")
+    public R getOthersEquipment(String userId, @PathVariable long current, @PathVariable long limit, EquipmentRequestNoUserIdVo equipmentRequestNoUserIdVo){
         EquipmentRequestVo equipmentRequestVo=new EquipmentRequestVo();
         BeanUtils.copyProperties(equipmentRequestNoUserIdVo,equipmentRequestVo);
         equipmentRequestVo.setUserId(userId);//目标用户id
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(true);//已分配
-        //查询该用户公开的设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
+        //查询该用户分配的设备列表
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrderExceptMe(current,limit,equipmentRequestVo,"equipment_id",StpUtil.getLoginIdAsString());
         long total = equipmentPage.getTotal();//总记录数
-        List< Equipment > records = equipmentPage.getRecords();//数据list集合
+        List< Equipment > temp = equipmentPage.getRecords();//数据list集合
+        List<EquipmentResponseVo> records = new ArrayList<>();
+        for (Equipment equipment:temp) {
+            EquipmentResponseVo equipmentResponseVo = new EquipmentResponseVo();
+            BeanUtils.copyProperties(equipment,equipmentResponseVo);
+            if(!ObjectUtils.isEmpty(equipment.getUserId())){
+                equipmentResponseVo.setUserName(userService.getById(equipment.getUserId()).getUserName());
+            }
+            records.add(equipmentResponseVo);
+        }
         return R.ok().data("total",total).data("rows",records);
     }
 
-    @ApiOperation("用户购买顺序多条件查看未分配的设备")
+    @ApiOperation("用户多条件查看未分配的设备")
     @GetMapping("getUnassignedEquipment/{current}/{limit}")
     public R getUnassignedEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestNoUserIdVo equipmentRequestNoUserIdVo){
         EquipmentRequestVo equipmentRequestVo=new EquipmentRequestVo();
@@ -97,23 +127,38 @@ public class EquipmentController {
         equipmentRequestVo.setIsRetired(false);//未报废
         equipmentRequestVo.setIsAssigned(false);//未分配
         //查询未分配的设备列表
-        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"purchase_date");
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"equipment_id");
         long total = equipmentPage.getTotal();//总记录数
-        List< Equipment > records = equipmentPage.getRecords();//数据list集合
+        List< Equipment > temp = equipmentPage.getRecords();//数据list集合
+        List<EquipmentResponseVo> records = new ArrayList<>();
+        for (Equipment equipment:temp) {
+            EquipmentResponseVo equipmentResponseVo = new EquipmentResponseVo();
+            BeanUtils.copyProperties(equipment,equipmentResponseVo);
+            if(!ObjectUtils.isEmpty(equipment.getUserId())){
+                equipmentResponseVo.setUserName(userService.getById(equipment.getUserId()).getUserName());
+            }
+            records.add(equipmentResponseVo);
+        }
         return R.ok().data("total",total).data("rows",records);
     }
 
-    @ApiOperation("管理员多条件按property顺序分页查看所有设备(含已报废设备)")
-    @GetMapping("getAllEquipment/{current}/{limit}/{property}")
+    @ApiOperation("管理员多条件分页查看所有设备(含已报废设备)")
+    @GetMapping("getAllEquipment/{current}/{limit}")
     @SaCheckRole("ADMIN")
-    public R getAllEquipment(@PathVariable long current, @PathVariable long limit, @PathVariable String property, EquipmentRequestVo equipmentRequestVo){
-        if(property.equals("purchase_date")||property.equals("unit_price")||property.equals("retirement_date")){
-            Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,property);
-            long total = equipmentPage.getTotal();//总记录数
-            List< Equipment > records = equipmentPage.getRecords();//数据list集合
-            return R.ok().data("total",total).data("rows",records);
+    public R getAllEquipment(@PathVariable long current, @PathVariable long limit, EquipmentRequestVo equipmentRequestVo){
+        Page< Equipment > equipmentPage = equipmentService.perPageByOrder(current,limit,equipmentRequestVo,"equipment_id");
+        long total = equipmentPage.getTotal();//总记录数
+        List< Equipment > temp = equipmentPage.getRecords();//数据list集合
+        List<EquipmentResponseVo> records = new ArrayList<>();
+        for (Equipment equipment:temp) {
+            EquipmentResponseVo equipmentResponseVo = new EquipmentResponseVo();
+            BeanUtils.copyProperties(equipment,equipmentResponseVo);
+            if(!ObjectUtils.isEmpty(equipment.getUserId())){
+                equipmentResponseVo.setUserName(userService.getById(equipment.getUserId()).getUserName());
+            }
+            records.add(equipmentResponseVo);
         }
-        else return R.error().message("不允许以属性:"+property+"排序，仅允许以属性‘purchase_date’,'retirement_date','unit_price'排序");
+        return R.ok().data("total",total).data("rows",records);
     }
 
     @ApiOperation("设备分类统计")
@@ -205,7 +250,7 @@ public class EquipmentController {
     @SaCheckRole("ADMIN")
     public R unassignEquipmentByForce(@PathVariable Integer equipmentId) {
         Equipment equipment = equipmentService.getById(equipmentId);
-        equipment.setUserId(null);
+        equipment.setUserId("");
         equipment.setIsAssigned(false);
         //取消分配设备
         equipmentService.updateById(equipment);

@@ -28,6 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin
 @Api(tags = "用户相关接口")
 public class UserController {
     @Autowired
@@ -53,6 +54,13 @@ public class UserController {
         }else {
             return R.error().message("没有该用户");
         }
+    }
+
+    @ApiOperation("注销登录")
+    @PostMapping("logout")
+    R logout(){
+        StpUtil.logout();
+        return R.ok();
     }
 
     @ApiOperation("获取当前登录用户信息")
@@ -99,7 +107,7 @@ public class UserController {
         BeanUtils.copyProperties(userRequestVo,user);
         String MD5Password = SaSecureUtil.md5(userRequestVo.getUserPassword());
         user.setUserPassword(MD5Password);
-        userService.save(user);
+        userService.forceSave(user);
         return R.ok();
     }
 

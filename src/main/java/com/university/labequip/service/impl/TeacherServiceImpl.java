@@ -2,6 +2,7 @@ package com.university.labequip.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.university.labequip.entity.Teacher;
+import com.university.labequip.entity.vo.TeacherVo;
 import com.university.labequip.mapper.TeacherMapper;
 import com.university.labequip.service.TeacherService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,14 +27,17 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
     private TeacherService teacherService;
 
     @Override
-    public List<String> getAllTeacher() {
+    public List<TeacherVo> getAllTeacher() {
         //新建列表用于返回
-        List<String> list = new ArrayList<>();
+        List<TeacherVo> list = new ArrayList<>();
         QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
 
         //遍历项目
         for (Teacher teacher : teacherService.list(wrapper)) {
-            list.add(teacher.getTeacherName());
+            TeacherVo temp=new TeacherVo();
+            temp.setTeacherId(teacher.getTeacherId());
+            temp.setTeacherName(teacher.getTeacherName());
+            list.add(temp);
         }
         return list;
     }

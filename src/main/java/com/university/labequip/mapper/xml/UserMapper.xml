@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.university.labequip.mapper.UserMapper">
-
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.university.labequip.entity.User" id="UserMap">
+        <result property="userId" column="user_id"/>
+        <result property="userPassword" column="user_password"/>
+        <result property="userName" column="user_name"/>
+        <result property="place" column="place"/>
+        <result property="instructor" column="instructor"/>
+        <result property="userType" column="user_type"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="gmtModify" column="gmt_modify"/>
+        <result property="modifierId" column="modifier_id"/>
+        <result property="gmtDelete" column="gmt_delete"/>
+    </resultMap>
+    <select id="selectByIdIncludeDeleted" resultMap="UserMap" parameterType="java.lang.String">
+        ${_parameter}
+    </select>
+    <delete id="forceDelete" parameterType="java.lang.String">
+        ${_parameter}
+    </delete>
 </mapper>

@@ -10,7 +10,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private UserService userService;
+
+    @Resource
+    UserMapper userMapper;
 
     @Override
     public List<UserResponseVo> getAllUser() {
@@ -58,4 +63,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         return list;
     }
+
+    @Override
+    public User getByIdIncludeDeleted(String userId) {
+        String sql="SELECT\r\n" + "  * \r\n" + "FROM\r\n" + "  lab_user \r\n" + "WHERE\r\n"
+                + "  user_id = " + userId + "\r\n" + "";
+        return userMapper.selectByIdIncludeDeleted(sql);
+    }
+
+    @Override
+    public int forceSave(User user) {
+        if(!ObjectUtils.isEmpty(getByIdIncludeDeleted(user.getUserId()))){
+            String sql="DELETE\r\n" + "FROM\r\n" + "  lab_user \r\n" + "WHERE\r\n"
+                    + "  user_id = " + user.getUserId() + "\r\n" + "";
+            userMapper.forceDelete(sql);
+        }
+        return userMapper.insert(user);
+    }
+
 }

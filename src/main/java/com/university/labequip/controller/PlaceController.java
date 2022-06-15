@@ -3,7 +3,7 @@ package com.university.labequip.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.university.labequip.entity.Place;
-import com.university.labequip.entity.vo.PlaceRequestVo;
+import com.university.labequip.entity.vo.PlaceVo;
 import com.university.labequip.service.PlaceService;
 import com.university.labequip.utils.R;
 import io.swagger.annotations.Api;
@@ -24,6 +24,7 @@ import java.util.List;
  * @since 2021-07-03
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/api/place")
 @Api(tags = "位置相关接口")
 public class PlaceController {
@@ -33,19 +34,19 @@ public class PlaceController {
     @ApiOperation("查询所有位置")
     @GetMapping("selectAllPlace")
     public R selectAllPlace() {
-        List<String> list=placeService.getAllPlace();
+        List<PlaceVo> list=placeService.getAllPlace();
         return R.ok().data("list",list);
     }
 
     @ApiOperation("管理员新增位置")
     @PostMapping("addPlace")
     @SaCheckRole("ADMIN")
-    public R addPlace(@RequestBody PlaceRequestVo placeRequestVo) {
-        if(!ObjectUtils.isEmpty(placeService.getById(placeRequestVo.getPlaceId()))){
+    public R addPlace(@RequestBody PlaceVo placeVo) {
+        if(!ObjectUtils.isEmpty(placeService.getById(placeVo.getPlaceId()))){
             return R.error().message("该序号已存在");
         }
         Place place = new Place();
-        BeanUtils.copyProperties(placeRequestVo,place);
+        BeanUtils.copyProperties(placeVo,place);
         placeService.save(place);
         return R.ok();
     }
@@ -63,6 +64,12 @@ public class PlaceController {
     @SaCheckRole("ADMIN")
     public R alterPlace(@PathVariable Integer placeId, @RequestParam String placeName) {
         Place place = placeService.getById(placeId);
+        if(ObjectUtils.isEmpty(place)){
+            return R.error().message("该序号的位置不存在！");
+        }
+        if(ObjectUtils.isEmpty(placeName)){
+            return R.error().message("新位置不可为空！");
+        }
         place.setPlaceName(placeName);
         placeService.updateById(place);
         return R.ok();

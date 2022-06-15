@@ -20,4 +20,10 @@ public interface UserService extends IService<User> {
     List<UserResponseVo> getAllUser();
 
     List<UserInfoResponseVo> getUser();
+
+    //User getByIdIncludeDeleted2(String userId);
+
+    User getByIdIncludeDeleted(String userId);
+
+    int forceSave(User user);
 }

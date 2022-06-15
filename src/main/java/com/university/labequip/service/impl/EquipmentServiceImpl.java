@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.university.labequip.entity.Equipment;
 import com.university.labequip.entity.vo.EquipmentRequestVo;
 import com.university.labequip.mapper.EquipmentMapper;
+import com.university.labequip.mapper.UserMapper;
 import com.university.labequip.service.EquipmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
 
     @Resource
     EquipmentMapper equipmentMapper;
+    @Resource
+    UserMapper userMapper;
 
     //不分页版
     @Override
@@ -112,5 +115,42 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
                 .eq("is_retired",true)
                 .groupBy(property);
         return equipmentMapper.selectMaps(equipmentQueryWrapper);
+    }
+
+    @Override
+    public Page<Equipment> perPageByOrderExceptMe(long current, long limit, EquipmentRequestVo equipmentRequestVo, String property, String myId) {
+        QueryWrapper<Equipment> equipmentQueryWrapper = new QueryWrapper<>();
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getEquipmentType()))
+            equipmentQueryWrapper.eq("equipment_type",equipmentRequestVo.getEquipmentType());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getBrand()))
+            equipmentQueryWrapper.like("brand",equipmentRequestVo.getBrand());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getModel()))
+            equipmentQueryWrapper.like("model",equipmentRequestVo.getModel());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getSpecification()))
+            equipmentQueryWrapper.like("specification",equipmentRequestVo.getSpecification());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getUnitPrice()))
+            equipmentQueryWrapper.eq("unit_price",equipmentRequestVo.getUnitPrice());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getPurchaseDate()))
+            equipmentQueryWrapper.eq("purchase_date",equipmentRequestVo.getPurchaseDate());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getRetirementDate()))
+            equipmentQueryWrapper.eq("retirement_date",equipmentRequestVo.getRetirementDate());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getIsRetired()))
+            equipmentQueryWrapper.eq("is_retired",equipmentRequestVo.getIsRetired());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getUserId()))
+            equipmentQueryWrapper.eq("user_id",equipmentRequestVo.getUserId());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getPurchaserId()))
+            equipmentQueryWrapper.eq("purchaser_id",equipmentRequestVo.getPurchaserId());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getPlace()))
+            equipmentQueryWrapper.eq("place",equipmentRequestVo.getPlace());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getIsRecorded()))
+            equipmentQueryWrapper.eq("is_recorded",equipmentRequestVo.getIsRecorded());
+        if (!ObjectUtils.isEmpty(equipmentRequestVo.getIsAssigned()))
+            equipmentQueryWrapper.eq("is_assigned",equipmentRequestVo.getIsAssigned());
+        if (!ObjectUtils.isEmpty(myId))
+            equipmentQueryWrapper.ne("user_id",myId);
+        equipmentQueryWrapper.orderByDesc(property);
+        Page< Equipment > equipmentPage = new Page<>(current,limit);
+        equipmentMapper.selectPage(equipmentPage,equipmentQueryWrapper);
+        return equipmentPage;
     }
 }

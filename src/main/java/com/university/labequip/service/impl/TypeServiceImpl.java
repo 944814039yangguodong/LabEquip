@@ -2,6 +2,7 @@ package com.university.labequip.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.university.labequip.entity.Type;
+import com.university.labequip.entity.vo.TypeVo;
 import com.university.labequip.mapper.TypeMapper;
 import com.university.labequip.service.TypeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,14 +27,17 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
     private TypeService typeService;
 
     @Override
-    public List<String> getAllType() {
+    public List<TypeVo> getAllType() {
         //新建列表用于返回
-        List<String> list = new ArrayList<>();
+        List<TypeVo> list = new ArrayList<>();
         QueryWrapper<Type> wrapper = new QueryWrapper<>();
 
         //遍历项目
         for (Type type : typeService.list(wrapper)) {
-            list.add(type.getTypeName());
+            TypeVo temp = new TypeVo();
+            temp.setTypeId(type.getTypeId());
+            temp.setTypeName(type.getTypeName());
+            list.add(temp);
         }
         return list;
     }

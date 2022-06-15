@@ -20,4 +20,7 @@ public class UserInfoResponseVo {
     @ApiModelProperty(value = "导师（老师填自己）")
     private String instructor;
 
+    @ApiModelProperty(value = "用户类型")
+    private Integer userType;
+
 }

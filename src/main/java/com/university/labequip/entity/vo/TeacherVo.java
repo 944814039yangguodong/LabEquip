@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value="新增导师请求信息", description="导师请求信息")
-public class TeacherRequestVo {
+public class TeacherVo {
     @ApiModelProperty(value = "导师编号")
     private Integer teacherId;
 

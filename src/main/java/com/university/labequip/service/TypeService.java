@@ -2,6 +2,7 @@ package com.university.labequip.service;
 
 import com.university.labequip.entity.Type;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.university.labequip.entity.vo.TypeVo;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ import java.util.List;
  */
 public interface TypeService extends IService<Type> {
 
-    List<String> getAllType();
+    List<TypeVo> getAllType();
 }

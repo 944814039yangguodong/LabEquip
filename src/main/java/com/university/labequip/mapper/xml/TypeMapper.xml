@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.university.labequip.mapper.TypeMapper">
-
+    <resultMap id="typeMap" type="com.university.labequip.entity.Type">
+        <result column="type_id" jdbcType="INTEGER" property="typeId" />
+        <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+        <result column="gmt_create" jdbcType="DATE" property="gmtCreate" />
+        <result column="creator_id" jdbcType="VARCHAR" property="creatorId" />
+        <result column="gmt_modify" jdbcType="DATE" property="gmtModify" />
+        <result column="modifier_id" jdbcType="VARCHAR" property="modifierId" />
+        <result column="gmt_delete" jdbcType="DATE" property="gmtDelete" />
+    </resultMap>
 </mapper>

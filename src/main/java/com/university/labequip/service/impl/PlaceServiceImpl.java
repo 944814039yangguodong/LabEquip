@@ -2,6 +2,7 @@ package com.university.labequip.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.university.labequip.entity.Place;
+import com.university.labequip.entity.vo.PlaceVo;
 import com.university.labequip.mapper.PlaceMapper;
 import com.university.labequip.service.PlaceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,14 +27,17 @@ public class PlaceServiceImpl extends ServiceImpl<PlaceMapper, Place> implements
     private PlaceService placeService;
 
     @Override
-    public List<String> getAllPlace() {
+    public List<PlaceVo> getAllPlace() {
         //新建列表用于返回
-        List<String> list = new ArrayList<>();
+        List<PlaceVo> list = new ArrayList<>();
         QueryWrapper<Place> wrapper = new QueryWrapper<>();
 
         //遍历项目
         for (Place place : placeService.list(wrapper)) {
-            list.add(place.getPlaceName());
+            PlaceVo temp=new PlaceVo();
+            temp.setPlaceId(place.getPlaceId());
+            temp.setPlaceName(place.getPlaceName());
+            list.add(temp);
         }
         return list;
     }

@@ -94,5 +94,4 @@ public class Equipment implements Serializable {
     @ApiModelProperty(value = "删除时间")
     private Date gmtDelete;
 
-
 }

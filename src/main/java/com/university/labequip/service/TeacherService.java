@@ -2,6 +2,7 @@ package com.university.labequip.service;
 
 import com.university.labequip.entity.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.university.labequip.entity.vo.TeacherVo;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ import java.util.List;
  */
 public interface TeacherService extends IService<Teacher> {
 
-    List<String> getAllTeacher();
+    List<TeacherVo> getAllTeacher();
 }

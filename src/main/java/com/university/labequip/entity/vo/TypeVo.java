@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value="新增类型请求信息", description="类型请求信息")
-public class TypeRequestVo {
+public class TypeVo {
     @ApiModelProperty(value = "设备类型编号")
     private Integer typeId;
 

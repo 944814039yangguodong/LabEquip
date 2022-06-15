@@ -25,4 +25,6 @@ public interface EquipmentService extends IService<Equipment> {
     List<Map<String, Object>> countByGroup(String property);
 
     List<Map<String, Object>> countByGroupRetired(String property);
+
+    Page<Equipment> perPageByOrderExceptMe(long current, long limit, EquipmentRequestVo equipmentRequestVo, String property, String myId);
 }

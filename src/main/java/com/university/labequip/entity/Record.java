@@ -1,13 +1,13 @@
 package com.university.labequip.entity;
 
+import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,34 +19,34 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author Guodong
- * @since 2021-07-03
+ * @since 2021-08-04
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("lab_user")
-@ApiModel(value="User对象", description="")
-public class User implements Serializable {
+@TableName("lab_record")
+@ApiModel(value="Record对象", description="")
+public class Record implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "账号/学工号")
-    @TableId(value = "user_id", type = IdType.INPUT)
-    private String userId;
+    @ApiModelProperty(value = "主键id（收支记录）")
+    @TableId(value = "record_id", type = IdType.AUTO)
+    private Integer recordId;
 
-    @ApiModelProperty(value = "用户密码")
-    private String userPassword;
+    @ApiModelProperty(value = "日期")
+    private Date date;
 
-    @ApiModelProperty(value = "用户姓名")
-    private String userName;
+    @ApiModelProperty(value = "收入true/支出false")
+    private Boolean isIncome;
 
-    @ApiModelProperty(value = "实验室位置")
-    private String place;
+    @ApiModelProperty(value = "金额")
+    private BigDecimal amount;
 
-    @ApiModelProperty(value = "导师（老师填自己）")
-    private String instructor;
+    @ApiModelProperty(value = "详情")
+    private String details;
 
-    @ApiModelProperty(value = "用户类型")
-    private Integer userType;
+    @ApiModelProperty(value = "记录人")
+    private String recorder;
 
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
@@ -66,5 +66,6 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "删除时间")
     private Date gmtDelete;
+
 
 }
